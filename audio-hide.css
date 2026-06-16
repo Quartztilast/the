@@ -1,0 +1,25 @@
+﻿/* No HTML audio elements used - Web Audio API handles all sound */
+/* This prevents any accidentally added audio elements from showing */
+audio, video {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -10000px !important;
+    top: -10000px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: -9999 !important;
+}
+
+/* Hide any browser media controls */
+::-webkit-media-controls, ::-moz-media-controls {
+    display: none !important;
+}
+
+audio::-webkit-media-controls-panel,
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-volume-slider {
+    display: none !important;
+}

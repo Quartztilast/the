@@ -1,0 +1,78 @@
+/* RTB Ad Banner Container (PC only - right side) */
+.ad-banner-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 240px;
+    height: 100vh;
+    background: transparent;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+/* Revive Message */
+.revive-message {
+    margin: 20px 0;
+    padding: 15px 20px;
+    background: linear-gradient(180deg, rgba(212,165,90,0.9) 0%, rgba(184,120,64,0.9) 100%);
+    border: 3px solid #4a2b15;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.revive-message p {
+    font-size: 18px;
+    font-weight: 800;
+    color: #2d1608;
+    margin: 0;
+    text-shadow: 0 1px 0 rgba(255,220,160,0.6);
+    line-height: 1.4;
+}
+
+/* Revive Timer */
+.revive-timer {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: 800;
+    color: #FFE082;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.revive-timer span {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+#timerValue {
+    font-size: 36px;
+    color: #4CAF50;
+}
+
+.revive-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Hide ad banner on mobile */
+@media (max-width: 768px) {
+    .ad-banner-container {
+        display: none !important;
+    }
+
+    /* Hide Yandex sticky banner on mobile - it steals play space */
+    [id*="yandex"][class*="banner"],
+    [id*="rtb"],
+    .yandex_rtb,
+    div[data-ad],
+    .adsbygoogle {
+        display: none !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+    }
+}
