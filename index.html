@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <title>Котослияние</title>
+    <link rel="icon" type="image/png" href="asset/cats/cat-01.png">
+    <script src="/sdk.js"></script>
+    <script src="matter.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="audio-hide.css">
+    <link rel="stylesheet" href="ad-banner-styles.css">
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+    <div class="loading-card">
+        <div class="loading-title">Котослияние</div>
+        <div class="loading-bar" aria-hidden="true"><span></span></div>
+    </div>
+</div>
+
+<!-- SVG Icons -->
+<svg style="display: none;">
+    <defs>
+        <symbol id="sound-on" viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </symbol>
+        <symbol id="sound-off" viewBox="0 0 24 24">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+        </symbol>
+    </defs>
+</svg>
+
+<!-- MAIN MENU SCREEN -->
+<div id="menu-screen">
+    <img class="menu-bg" id="menuBg" src="asset/cats/cat-room-bg.png" data-en="asset/cats/cat-room-bg.png" alt="menu" draggable="false" oncontextmenu="return false;">
+    <div class="cat-menu-card" aria-hidden="true">
+        <div class="cat-menu-kicker">10 котиков • слияние • мяу-эффекты</div>
+        <h1>Котослияние</h1>
+        <p>Соединяй одинаковых котиков и открывай новых пушистых героев.</p>
+    </div>
+    <button class="play-btn cat-play-btn" id="playBtn" data-i18n="play_btn">Играть</button>
+    <div class="main-menu-clickable-area">
+        <div class="settings-area"></div>
+    </div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game-screen">
+    <img class="game-bg" id="gameBg" src="asset/cats/cat-room-bg.png" alt="game bg" draggable="false" oncontextmenu="return false;">
+
+    <!-- Top-Left UI Container -->
+    <div class="top-left-controls">
+        <!-- Score Panel -->
+        <div class="score-panel ui-panel" id="scorePanel">
+            <div class="score-row">
+                <span class="label" data-i18n="record_label">Рекорд:</span>
+                <span class="value" id="recordValue">0</span>
+            </div>
+            <div class="score-row">
+                <span class="label" data-i18n="score_label">Счёт:</span>
+                <span class="value" id="scoreValue">0</span>
+            </div>
+        </div>
+
+        <div class="buttons-row">
+            <!-- Menu Button -->
+            <button class="menu-btn" id="menuBtn">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </button>
+
+            <!-- Sound Toggle -->
+            <button class="sound-btn" id="soundBtn">
+                <svg>
+                    <use href="#sound-on"></use>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Next Fruit Preview -->
+        <div class="next-fruit-panel" id="nextFruitPanel">
+            <div class="label" data-i18n="next_label">Далее</div>
+            <img id="nextFruitImg" src="" alt="next">
+        </div>
+    </div>
+
+    <!-- Score on Board (Mobile Only - Top area) -->
+    <div class="score-on-board" id="scoreOnBoard">
+        <span class="record-text" id="recordOnBoard">Рекорд: 0</span>
+        <span class="score-text" id="scoreOnBoardText">Счёт: 0</span>
+    </div>
+
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Ad Banner Container (PC only - right side) -->
+    <div class="ad-banner-container" id="adBannerContainer">
+        <!-- Вставьте сюда RTB-код из кабинета Яндекс.Рекламы -->
+    </div>
+
+    <div class="drop-guide" id="dropGuide"></div>
+    <img class="current-fruit-preview" id="currentFruitPreview" src="" alt="">
+
+    <div class="particles-container" id="particlesContainer"></div>
+
+    <!-- Pause Overlay -->
+    <div class="pause-overlay" id="pauseOverlay">
+        <div class="pause-menu">
+            <h2 data-i18n="pause_title">Пауза</h2>
+            <button id="resumeBtn" data-i18n="resume_btn">Продолжить</button>
+            <button id="settingsBtnPause" data-i18n="settings_btn">Настройки</button>
+            <button id="mainMenuBtn" data-i18n="exit_btn">Выход</button>
+        </div>
+    </div>
+
+    <!-- Game Over -->
+    <div id="game-over">
+        <div class="game-over-box">
+            <h2 data-i18n="game_over_title">Игра Окончена</h2>
+            <p><span data-i18n="score_label">Счёт:</span> <span id="finalScore">0</span></p>
+
+            <!-- Сообщение о возрождении -->
+            <div class="revive-message" id="reviveMessage">
+                <p data-i18n="revive_message">Посмотрите рекламу, чтобы возродиться и взорвать все фрукты!</p>
+            </div>
+
+            <!-- Таймер обратного отсчёта -->
+            <div class="revive-timer" id="reviveTimer" style="display:none;">
+                <span data-i18n="revive_timer_label">Возрождение через:</span> <span id="timerValue">3</span>
+            </div>
+
+            <!-- Кнопки (показываются после таймера) -->
+            <div class="game-over-buttons" id="gameOverButtons" style="display:none;">
+                <button class="revive-btn" id="reviveBtn" data-i18n="revive_btn">Смотреть рекламу</button>
+                <button class="restart-btn" id="restartBtn" data-i18n="restart_btn">Выйти</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div class="modal-overlay" id="leaderboardModal">
+        <div class="modal-box leaderboard-modal">
+            <h2 data-i18n="leaderboard_title">Таблица Лидеров</h2>
+            <div class="leaderboard-content">
+            </div>
+            <button class="modal-close" id="closeLeaderboard" data-i18n="close_btn">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-box settings-modal">
+            <h2 data-i18n="settings_title">Настройки</h2>
+            <div class="settings-content">
+                <div class="setting-item">
+                    <span class="setting-label" data-i18n="language_label">Язык</span>
+                    <div class="language-switcher">
+                        <button class="lang-btn active" data-lang="ru">RU</button>
+                        <button class="lang-btn" data-lang="en">EN</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label" data-i18n="music_volume_label">Громкость Музыки</span>
+                    <div class="volume-control">
+                        <span class="volume-icon">🔊</span>
+                        <input type="range" class="volume-slider" id="musicVolume" min="0" max="100" value="35">
+                        <span class="volume-value" id="musicVolumeValue">35%</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label" data-i18n="sfx_volume_label">Громкость Звуков</span>
+                    <div class="volume-control">
+                        <span class="volume-icon">🔔</span>
+                        <input type="range" class="volume-slider" id="sfxVolume" min="0" max="100" value="80">
+                        <span class="volume-value" id="sfxVolumeValue">80%</span>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-close" id="closeSettings" data-i18n="close_btn">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<!-- Global Modals (outside game-screen) -->
+<div class="modal-overlay" id="leaderboardModalGlobal">
+    <div class="modal-box leaderboard-modal">
+        <h2 data-i18n="leaderboard_title">Таблица Лидеров</h2>
+        <div class="leaderboard-content">
+        </div>
+        <button class="modal-close" id="closeLeaderboardGlobal" data-i18n="close_btn">Закрыть</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="settingsModalGlobal">
+    <div class="modal-box settings-modal">
+        <h2 data-i18n="settings_title">Настройки</h2>
+        <div class="settings-content">
+            <div class="setting-item">
+                <span class="setting-label" data-i18n="language_label">Язык</span>
+                <div class="language-switcher">
+                    <button class="lang-btn active" data-lang="ru">RU</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label" data-i18n="music_volume_label">Громкость Музыки</span>
+                <div class="volume-control">
+                    <span class="volume-icon">🔊</span>
+                    <input type="range" class="volume-slider" id="musicVolumeGlobal" min="0" max="100" value="35">
+                    <span class="volume-value" id="musicVolumeValueGlobal">35%</span>
+                </div>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label" data-i18n="sfx_volume_label">Громкость Звуков</span>
+                <div class="volume-control">
+                    <span class="volume-icon">🔔</span>
+                    <input type="range" class="volume-slider" id="sfxVolumeGlobal" min="0" max="100" value="80">
+                    <span class="volume-value" id="sfxVolumeValueGlobal">80%</span>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close" id="closeSettingsGlobal" data-i18n="close_btn">Закрыть</button>
+    </div>
+</div>
+
+<!-- Audio handled via Web Audio API in game.js - no <audio> elements to prevent system/notification media players -->
+
+<script src="game.js"></script>
+
+</body>
+</html>
