@@ -194,6 +194,7 @@ const I18N = window.I18N = {
         revive_timer_label: 'Возрождение через:',
         revive_btn: '📺 Смотреть рекламу за возрождение',
         restart_btn: 'Выйти',
+        leaderboard_btn: 'Лидерборд',
         leaderboard_title: 'Таблица Лидеров',
         leaderboard_self: 'Вы',
         leaderboard_best: 'Ваш Рекорд',
@@ -217,6 +218,7 @@ const I18N = window.I18N = {
         revive_timer_label: 'Reviving in:',
         revive_btn: '📺 Watch Ad for Revival',
         restart_btn: 'Exit',
+        leaderboard_btn: 'Leaderboard',
         leaderboard_title: 'Leaderboard',
         leaderboard_self: 'You',
         leaderboard_best: 'Your Best',
@@ -1173,7 +1175,7 @@ function getFruitScaleFactorForViewport(viewportWidth, viewportHeight) {
     const minDimension = Math.min(viewportWidth, viewportHeight);
     const reference = 900;
     const raw = minDimension / reference;
-    return Math.min(0.78, Math.max(0.42, raw * 0.74));
+    return Math.min(0.88, Math.max(0.48, raw * 0.82));
 }
 
 function getFruitScaleFactor() {
@@ -1852,7 +1854,7 @@ function gameLoop(timestamp) {
                 ctx.rotate(body.angle);
 
                 const radius = getFruitRadius(fruit.radius);
-                const size = radius * 2;
+                const size = radius * 2.08;
 
                 const glowColors = ['rgba(255,224,130,0.25)', 'rgba(255,138,101,0.25)', 'rgba(174,213,129,0.25)', 'rgba(79,195,247,0.25)', 'rgba(240,98,146,0.25)'];
                 ctx.shadowColor = glowColors[body.fruitLevel % glowColors.length];

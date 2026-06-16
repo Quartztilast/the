@@ -1518,6 +1518,7 @@ button, .play-btn, .leaderboard-area, .settings-area,
 }
 
 .play-btn.cat-play-btn,
+.leaderboard-area,
 .settings-area {
     display: flex;
     align-items: center;
@@ -1548,7 +1549,7 @@ button, .play-btn, .leaderboard-area, .settings-area,
 }
 
 .settings-area::before {
-    content: "Настройки";
+    content: none;
 }
 
 #game-screen {
@@ -1771,6 +1772,7 @@ button, .play-btn, .leaderboard-area, .settings-area,
 }
 
 .play-btn.cat-play-btn,
+.leaderboard-area,
 .settings-area {
     border-color: rgba(248, 255, 218, 0.98);
     background:
@@ -1784,6 +1786,16 @@ button, .play-btn, .leaderboard-area, .settings-area,
 
 .play-btn.cat-play-btn {
     top: 54%;
+}
+
+.leaderboard-area {
+    top: calc(54% + clamp(72px, 11vh, 96px));
+    height: clamp(50px, 9vh, 72px);
+    font-size: clamp(16px, 3.2vw, 24px);
+}
+
+.settings-area {
+    top: calc(54% + clamp(132px, 20vh, 170px));
 }
 
 #game-screen {
