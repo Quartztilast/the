@@ -1119,7 +1119,7 @@ initYandexSDK();
 const gameScreenEl = document.getElementById('game-screen');
 if (gameScreenEl) gameScreenEl.addEventListener('mousemove', onMouseMove);
 if (gameScreenEl) gameScreenEl.addEventListener('click', (e) => {
-    if (e.target.closest('.score-on-board') || e.target.closest('.top-right-controls') ||
+    if (e.target.closest('.score-on-board') || e.target.closest('.top-left-controls') ||
         e.target.closest('#game-over') || e.target.closest('.pause-overlay') ||
         e.target.closest('.next-fruit-panel')) return;
     onClickDrop(e);
@@ -1173,7 +1173,7 @@ function getFruitScaleFactorForViewport(viewportWidth, viewportHeight) {
     const minDimension = Math.min(viewportWidth, viewportHeight);
     const reference = 900;
     const raw = minDimension / reference;
-    return Math.min(0.84, Math.max(0.45, raw * 0.78));
+    return Math.min(0.78, Math.max(0.42, raw * 0.74));
 }
 
 function getFruitScaleFactor() {
@@ -1269,6 +1269,7 @@ function updateGameLayoutDimensions(W, H) {
     const isMobile = false;
     const safeMargin = Math.min(Math.max(W * 0.025, 22), 70);
     const safeTop = Math.min(Math.max(H * 0.035, 24), 58);
+    const topUiReserve = Math.min(Math.max(H * 0.17, 118), Math.max(86, H * 0.32), 176);
     const horizontalBounds = getPlayfieldHorizontalBounds(W, H, safeMargin, isMobile);
     gameAreaLeft = horizontalBounds.left;
     gameAreaRight = horizontalBounds.right;
@@ -1283,12 +1284,12 @@ function updateGameLayoutDimensions(W, H) {
     if (gameBgImg && gameBgImg.naturalWidth && gameBgImg.naturalHeight) {
         const { drawH, offsetY } = getImageVisibleRect(gameBgImg.naturalWidth, gameBgImg.naturalHeight, W, H);
         const artBounds = PLAYFIELD_ART_BOUNDS.desktop;
-        gameAreaTop = Math.max(Math.round(offsetY + drawH * artBounds.top), safeTop);
+        gameAreaTop = Math.max(Math.round(offsetY + drawH * artBounds.top), safeTop, topUiReserve);
         gameAreaBottom = Math.min(Math.round(offsetY + drawH * artBounds.bottom), safeBottom);
     } else {
         const topMargin = Math.max(Math.min(H * 0.08, 140), 40);
         const bottomMargin = Math.max(Math.min(H * 0.09, 180), 60);
-        gameAreaTop = Math.max(topMargin, safeTop);
+        gameAreaTop = Math.max(topMargin, safeTop, topUiReserve);
         gameAreaBottom = Math.min(Math.max(gameAreaTop + 320, H - bottomMargin), safeBottom);
     }
 
@@ -1589,9 +1590,9 @@ function handleCollision(event) {
 
             newBody.circleRadius = newRadius;
 
-            const randomHorizontal = (Math.random() - 0.5) * 4;
-            Matter.Body.setVelocity(newBody, { x: randomHorizontal, y: -7.5 });
-            Matter.Body.setAngularVelocity(newBody, randomHorizontal * 0.018);
+            const randomHorizontal = (Math.random() - 0.5) * 5.2;
+            Matter.Body.setVelocity(newBody, { x: randomHorizontal, y: -8.4 });
+            Matter.Body.setAngularVelocity(newBody, randomHorizontal * 0.026);
 
             Matter.Composite.add(world, newBody);
             fruitBodies.push(newBody);
@@ -1630,17 +1631,19 @@ function spawnMergeEffects(x, y, radius) {
     particlesContainer.appendChild(flash);
     setTimeout(() => flash.remove(), 600);
 
-    const colors = ['#FFE082', '#FF8A65', '#AED581', '#4FC3F7', '#F06292', '#FFD54F', '#FF7043', '#CE93D8', '#FF5252', '#69F0AE', '#40C4FF', '#FFAB40'];
-    for (let i = 0; i < 16; i++) {
+    const colors = ['#F9FFE2', '#C8F56C', '#73D65B', '#2FB457', '#FFE680', '#B7F7A2'];
+    const symbols = ['🐾', '🌿', '✦', '💚', '🐱'];
+    for (let i = 0; i < 18; i++) {
         const p = document.createElement('div');
-        p.className = 'particle';
-        const size = 5 + Math.random() * 14;
+        p.className = 'particle cat-particle';
+        const size = 14 + Math.random() * 12;
         const color = colors[Math.floor(Math.random() * colors.length)];
         p.style.width = size + 'px';
         p.style.height = size + 'px';
-        p.style.background = color;
         p.style.color = color;
-        const angle = (Math.PI * 2 / 16) * i + Math.random() * 0.5;
+        p.style.fontSize = size + 'px';
+        p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        const angle = (Math.PI * 2 / 18) * i + Math.random() * 0.5;
         const dist = radius * 0.5 + Math.random() * radius;
         p.style.left = (x + Math.cos(angle) * dist) + 'px';
         p.style.top = (y + Math.sin(angle) * dist) + 'px';
@@ -1663,36 +1666,33 @@ function spawnComboIndicator(comboCount) {
     const el = document.createElement('div');
     el.className = 'combo-indicator';
 
-    // Bright neon colors — vivid and eye-catching
-    const neonColors = [
-        '#FF003C', // neon red
-        '#00FF87', // neon green
-        '#FFE600', // neon yellow
-        '#FF00FF', // neon magenta
-        '#00DDFF', // neon cyan
-        '#FF6600', // neon orange
-        '#AA00FF', // neon violet
-        '#00FF00', // neon lime
-    ];
-    const color = neonColors[(comboCount - 3) % neonColors.length];
-    el.style.color = color;
+    const colors = ['#F9FFE2', '#D8FF7A', '#95EA5F', '#FFE680'];
+    el.style.color = colors[(comboCount - 3) % colors.length];
 
-    // Random position so it doesn't always block the center
-    const randX = 20 + Math.random() * 60; // 20%–80% from left
-    const randY = 15 + Math.random() * 40; // 15%–55% from top
+    const randX = 22 + Math.random() * 56;
+    const randY = 18 + Math.random() * 34;
     el.style.left = randX + '%';
     el.style.top = randY + '%';
 
     const lang = getEffectiveLang();
-    const comboLabel = lang === 'ru' ? 'КОМБО' : 'COMBO';
+    const comboLabel = lang === 'ru' ? 'МЯУ-КОМБО' : 'MEOW COMBO';
     el.textContent = comboLabel + ' x' + comboCount + '!';
     particlesContainer.appendChild(el);
     setTimeout(() => el.remove(), 1200);
 }
 
 // ===== INPUT =====
+function isPointerOverGameUi(target) {
+    return !!target.closest('.score-on-board, .top-left-controls, #game-over, .pause-overlay, .next-fruit-panel');
+}
+
 function onMouseMove(e) {
     if (gamePaused) return;
+    if (isPointerOverGameUi(e.target)) {
+        previewArmed = false;
+        updatePreviewPosition();
+        return;
+    }
     mouseX = getGamePointerX(e.clientX);
     previewArmed = true;
     updatePreviewPosition();
@@ -1706,6 +1706,11 @@ function onClickDrop(e) {
 function onTouchMove(e) {
     if (gamePaused) return;
     e.preventDefault();
+    if (isPointerOverGameUi(e.target)) {
+        previewArmed = false;
+        updatePreviewPosition();
+        return;
+    }
     if (e.touches.length > 0) {
         mouseX = getGamePointerX(e.touches[0].clientX);
         previewArmed = true;
